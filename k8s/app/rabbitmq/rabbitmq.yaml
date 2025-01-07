@@ -28,6 +28,6 @@ spec:
 
     auth:
       existingPasswordSecret: rabbitmq-secrets
-      existingPasswordKey: ADMIN_PASSWORD
+      existingSecretPasswordKey: ADMIN_PASSWORD
 
     plugins: "rabbitmq_management rabbit_peer_discovery_k8s rabbitmq_mqtt"
