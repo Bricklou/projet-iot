@@ -12,6 +12,7 @@
     "github>Bricklou/projet-iot//.github/renovate/labels.json5",
     "github>Bricklou/projet-iot//.github/renovate/semanticCommits.json5",
     "github>Bricklou/projet-iot//.github/renovate/kubernetes.json5",
+    "github>Bricklou/projet-iot//.github/renovate/kustomization.json5",
   ],
   dependencyDashboardTitle: "Dependency Dashboard 🤖",
   suppressNotifications: ["prEditedNotification", "prIgnoreNotification"],
