@@ -30,3 +30,36 @@ spec:
       admin:
         userKey: ADMIN_USER
         passwordKey: ADMIN_PASSWORD
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: OCIRepository
+metadata:
+  name: influxdb
+spec:
+  interval: 24h
+  url: oci://registry-1.docker.io/bitnamicharts/influxdb
+  ref:
+    tag: 6.5.0
+
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: influxdb
+spec:
+  interval: 30m
+  chartRef:
+    name: rabbitmq
+    kind: OCIRepository
+  timeout: 5m
+  values:
+    influxdb:
+      service:
+        type:
+          ClusterIP
+          
+    auth:
+      existingSecret: influxdb-secrets
+      admin:
+        userKey: ADMIN_USER
+        passwordKey: ADMIN_PASSWORD
