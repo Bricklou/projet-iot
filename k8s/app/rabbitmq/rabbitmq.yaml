@@ -1,11 +1,13 @@
 ---
 apiVersion: source.toolkit.fluxcd.io/v1beta2
-kind: HelmRepository
+kind: OCIRepository
 metadata:
   name: rabbitmq
 spec:
   interval: 24h
-  url: https://charts.bitnami.com/bitnami
+  url: oci://registry-1.docker.io/bitnamicharts/rabbitmq
+  ref:
+    tag: 15.2.1
 
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -14,13 +16,9 @@ metadata:
   name: rabbitmq
 spec:
   interval: 30m
-  chart:
-    spec:
-      chart: rabbitmq
-      version: 15.2.2
-      sourceRef:
-        kind: HelmRepository
-        name: rabbitmq
+  chartRef:
+    name: rabbitmq
+    kind: OCIRepository
   timeout: 5m
   values:
     replicaCount: 2
