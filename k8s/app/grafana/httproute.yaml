@@ -32,7 +32,6 @@ spec:
   rules:
     - backendRefs:
         - name: grafana
-          namespace: grafana
           port: 80
           weight: 1
           kind: Service
