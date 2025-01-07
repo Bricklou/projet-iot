@@ -1,0 +1,35 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: rabbitmq
+spec:
+  interval: 24h
+  url: https://charts.bitnami.com/bitnami
+
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: rabbitmq
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: rabbitmq
+      version: 15.2.2
+      sourceRef:
+        kind: HelmRepository
+        name: rabbitmq
+  timeout: 5m
+  values:
+    replicaCount: 2
+
+    persistence:
+      size: 3Gi
+
+    auth:
+      existingPasswordSecret: rabbitmq-secrets
+      existingPasswordKey: ADMIN_PASSWORD
+
+    plugins: "rabbitmq_management rabbit_peer_discovery_k8s rabbitmq_mqtt"
