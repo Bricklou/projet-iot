@@ -1,0 +1,52 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  packageRules: [
+    {
+      matchUpdateTypes: ["major"],
+      labels: ["type/major"],
+    },
+    {
+      matchUpdateTypes: ["minor"],
+      labels: ["type/minor"],
+    },
+    {
+      matchUpdateTypes: ["patch"],
+      labels: ["type/patch"],
+    },
+    {
+      matchUpdateTypes: ["digest"],
+      labels: ["type/digest"],
+    },
+
+    {
+      matchDatasources: ["docker"],
+      addLabels: ["renovate/container"],
+    },
+    {
+      matchDatasources: ["helm"],
+      addLabels: ["renovate/helm"],
+    },
+    {
+      matchDatasources: ["kustomize"],
+      addLabels: ["renovate/kustomize"],
+    },
+
+    {
+      matchDatasources: ["github-releases", "gitlab-tags"],
+      addLabels: ["renovate/github-releases"],
+    },
+    {
+      matchDatasources: ["github-actions"],
+      addLabels: ["renovate/github-action"],
+    },
+
+    {
+      matchDatasources: ["endoflife-date"],
+      addLabels: ["renovate/eol"],
+    },
+    {
+      matchDatasources: ["kubernetes-api"],
+      addLabels: ["renovate/kubernetes"],
+    },
+  ],
+}

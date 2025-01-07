@@ -1,0 +1,17 @@
+---
+name: "Pluto"
+
+on:
+  schedule:
+    - cron: "0 0 * * 1"
+  workflow_dispatch:
+
+jobs:
+  pluto:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download pluto
+        uses: FairwindsOps/pluto/github-action@v5.21.1
+      - name: Pluto detect-files
+        run: pluto detect-files -d k8s/
