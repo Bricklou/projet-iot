@@ -4,10 +4,10 @@
     "config:recommended",
     "docker:enableMajor",
     "replacements:k8s-registry-move",
-    ":dependencyDashboard"
+    ":dependencyDashboard",
     ":automergePatch",
     ":semanticCommits",
-    ":timezone(Europe/Paris)"
+    ":timezone(Europe/Paris)",
 
     "github>Bricklou/projet-iot//.github/renovate/labels.json5",
     "github>Bricklou/projet-iot//.github/renovate/semanticCommits.json5",
@@ -18,5 +18,5 @@
   rebaseWhen: "conflicted",
   schedule: ["after 6am on monday"],
   labels: ["dependencies"],
-  assignees: ["Bricklou", "Ryskann"],
+  assignees: ["Bricklou", "Ryskann"]
 }
