@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "agent"
+version = "0.1.0"
+description = ""
+authors = ["Louis Bailleau <louis13.bailleau@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+packages= [{include = "agent"}]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+paho-mqtt = "^2.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pyright]
+exclude = ["**/__pycache__"]
+venvPath = "."
+venv = ".venv"
