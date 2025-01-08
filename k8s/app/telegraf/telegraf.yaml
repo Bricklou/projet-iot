@@ -47,10 +47,12 @@ spec:
 
       inputs:
         - amqp_consumer:
-            brokers: ["amqp://rabbitmq"]
+            brokers: ["amqp://rabbitmq/"]
             exchange: "telegraf"
             username: "${RABBITMQ_USER}"
             password: "${RABBITMQ_PASSWORD}"
+            data_format: "json"
+            json_time_key: "timestamp"
 
         #
         # - mqtt_consumer:
