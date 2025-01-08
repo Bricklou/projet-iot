@@ -22,12 +22,21 @@ spec:
   timeout: 5m
   values:
     influxdb:
-      configuration:
       service:
         type:
           ClusterIP
     auth:
-      enabled: false
+      enabled: true
       user:
-        bucket: telegraf
+        user: influxdb
+        bucket: iot
         org: iot
+
+      readUser:
+        user: influxdb-ro
+      writeUser:
+        user: influxdb-rw
+
+      createUserToken: true
+
+      existingSecret: influxdb-secrets

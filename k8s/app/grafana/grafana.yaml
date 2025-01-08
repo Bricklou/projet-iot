@@ -25,6 +25,9 @@ spec:
   timeout: 5m
   releaseName: grafana
   values:
+    envFromSecrets:
+      - name: grafana-datasources-secrets
+
     annotations:
       reloader.stakater.com/auto: "true"
 
@@ -65,11 +68,13 @@ spec:
             isDefault: true
             editable: true
             jsonData:
-              defaultBucket: telegraf
+              defaultBucket: iot
               httpMode: GET
               organization: iot
               version: Flux
               readOnly: false
+            secureJsonData:
+              token: $INFLUXDB_TOKEN
 
     alerting:
       contactpoints.yaml:
