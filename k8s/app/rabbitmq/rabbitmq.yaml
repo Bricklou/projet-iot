@@ -23,6 +23,9 @@ spec:
   values:
     replicaCount: 2
 
+    commonAnnotations:
+      reloader.stakater.com/auto: "true"
+
     persistence:
       size: 3Gi
 
@@ -30,10 +33,19 @@ spec:
       existingPasswordSecret: rabbitmq-secrets
       existingSecretPasswordKey: ADMIN_PASSWORD
 
-    plugins: "rabbitmq_management rabbit_peer_discovery_k8s rabbitmq_mqtt"
+    extraPlugins: "rabbitmq_mqtt"
 
-    containerPorts:
-      dist: 25672
-      manager: 15672
-      metrics: 9419
-      mqtt: 1883
+    extraConfiguration: |-
+      mqtt.listeners.tcp.1 = 0.0.0.0:1883
+      mqtt.exchange = amq.topic
+      mqtt.vhost = /
+
+    extraContainerPorts:
+      - name: mqtt
+        containerPort: 1883
+
+    service:
+      extraPorts:
+        - name: mqtt
+          port: 1883
+          targetPort: 1883

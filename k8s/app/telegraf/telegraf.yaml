@@ -32,7 +32,7 @@ spec:
 
     service:
       enabled: false
-    
+
     config:
       outputs:
         - influxdb_v2:
@@ -44,26 +44,33 @@ spec:
             timeout: "5s"
             user_agent: "telegraf"
             content_encoding: "gzip"
-      
+
       inputs:
-        - mqtt_consumer:
-            servers: ["tcp://rabbitmq:1883"]
+        - amqp_consumer:
+            brokers: ["amqp://rabbitmq"]
+            exchange: "telegraf"
             username: "${RABBITMQ_USER}"
             password: "${RABBITMQ_PASSWORD}"
-            topics: [
-              "sensors/#",
-            #  "devices/+/temperature"  # Example with MQTT wildcards
-            ]
-            # Connection configurations
-            client_id: "telegraf_${HOSTNAME}"
-            qos: 1
-            # Data format configuration
-            data_format: "json"  # or "value", "influx" depending on your message format
-            # JSON parsing configuration (adjust based on your message structure)
-            #json_string_fields: ["field1", "field2"]
-            json_time_key: "timestamp"
-            #json_tag_keys: ["device_id", "location"]
-            #json_measurement_key: "measurement_name"
-            # Optional: persist sessions
-            persistent_session: true
 
+        #
+        # - mqtt_consumer:
+        #     servers: ["tcp://rabbitmq.project-iot.svc.cluster.local:1883"]
+        #     username: "${RABBITMQ_USER}"
+        #     password: "${RABBITMQ_PASSWORD}"
+        #     topics: [
+        #       "sensors/#",
+        #     #  "devices/+/temperature"  # Example with MQTT wildcards
+        #     ]
+        #     # Connection configurations
+        #     client_id: "telegraf_${HOSTNAME}"
+        #     qos: 1
+        #     # Data format configuration
+        #     data_format: "json"  # or "value", "influx" depending on your message format
+        #     # JSON parsing configuration (adjust based on your message structure)
+        #     #json_string_fields: ["field1", "field2"]
+        #     json_time_key: "timestamp"
+        #     #json_tag_keys: ["device_id", "location"]
+        #     #json_measurement_key: "measurement_name"
+        #     # Optional: persist sessions
+        #     persistent_session: true
+        #
