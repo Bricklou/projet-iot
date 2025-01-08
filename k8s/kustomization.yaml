@@ -5,3 +5,4 @@ kind: Kustomization
 resources:
   - ./app/grafana/
   - ./app/rabbitmq/
+  - ./app/influxdb/
