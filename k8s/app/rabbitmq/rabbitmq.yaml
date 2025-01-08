@@ -31,3 +31,9 @@ spec:
       existingSecretPasswordKey: ADMIN_PASSWORD
 
     plugins: "rabbitmq_management rabbit_peer_discovery_k8s rabbitmq_mqtt"
+
+    containerPorts:
+      dist: 25672
+      manager: 15672
+      metrics: 9419
+      mqtt: 1883
