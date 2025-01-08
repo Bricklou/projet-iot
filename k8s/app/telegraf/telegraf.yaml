@@ -26,31 +26,33 @@ spec:
   values:
     replicaCount: 2
 
+    envFromSecret: "telegraf-secrets"
+
     service:
       type : ClusterIP
     
     outputs:
       - influxdb:
         urls:
-          - "http://localhost:8086"
+          - "http://influxdb:8086"
         timeout: "5s"
-        #token: "${INFLUXDB_TOKEN}"
-        #organization: "${INFLUXDB_ORG}"
-        #bucket: "${INFLUXDB_BUCKET}"
+        token: "${INFLUXDB_TOKEN}"
+        organization: "${INFLUXDB_ORG}"
+        bucket: "${INFLUXDB_BUCKET}"
         user_agent: "telegraf"
         content_encoding: "gzip"
     
     inputs:
       - mqtt_consumer:
-        servers: ["tcp:/rabbitmq:1883"]
-        username: "RABBITMQ_USER"
-        password: "RABBITMQ_PASSWORD"
-        #topics: [
+        servers: ["tcp://rabbitmq:1883"]
+        username: "${RABBITMQ_USER}"
+        password: "${RABBITMQ_PASSWORD}"
+        topics: [
         #  "sensor/#",  # Example wildcard subscription
         #  "devices/+/temperature"  # Example with MQTT wildcards
-        #]
+        ]
         # Connection configurations
-        #client_id: "telegraf_${HOSTNAME}"
+        client_id: "telegraf_${HOSTNAME}"
         qos: 1
         connection_timeout: "30s"
         # Keep alive interval
@@ -68,20 +70,3 @@ spec:
         # Optional: Will message configuration
         retained_message_path: "/tmp/retained_messages"
 
-# Reference multiple external secrets
-envFromSecrets:
-  # RabbitMQ secrets
-  - secretName: rabbitmq-secrets
-    secretNamespace: rabbitmq  # Specify the namespace if different
-    mapping:
-      # Map the external secret keys to the environment variables Telegraf expects
-      #MQTT_USER: "rabbitmq-user"
-      MQTT_PASSWORD: "ADMIN_PASSWORD"
-  
-  # InfluxDB secrets
- # - secretName: influxdb-secrets
-  #  secretNamespace: influxdb  # Specify the namespace if different
-   # mapping:
-    #  INFLUXDB_TOKEN: "influxdb-token"
-     # INFLUXDB_ORG: "influxdb-org"
-      #INFLUXDB_BUCKET: "influxdb-bucket"
