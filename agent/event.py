@@ -27,8 +27,8 @@ def on_connect(client, _userdata, _flags, reason_code, _properties):
     print(f"Connected with result code {reason_code}")
     client.subscribe(TOPIC)
 
-def on_message(_client, _userdata, message):
-    print(f"Received message from {message.topic}: {str(message.payload)}")
+#def on_message(_client, _userdata, message):
+#    print(f"Received message from {message.topic}: {str(message.payload)}")
 
 def get_data_from_row(row, columns):
     if len(columns) == 0:
@@ -73,7 +73,7 @@ def send_row(row, mqtt_client):
 def get_MQTT_client():
     mqtt_client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
     mqtt_client.on_connect = on_connect
-    mqtt_client.on_message = on_message
+    #mqtt_client.on_message = on_message
 
     mqtt_client.username_pw_set(USER, PASSWORD)
     mqtt_client.connect(BROKER_IP, BROKER_PORT, KEEP_ALIVE)
