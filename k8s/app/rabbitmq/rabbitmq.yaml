@@ -33,19 +33,7 @@ spec:
       existingPasswordSecret: rabbitmq-secrets
       existingSecretPasswordKey: ADMIN_PASSWORD
 
-    extraPlugins: "rabbitmq_mqtt"
-
     extraConfiguration: |-
-      mqtt.listeners.tcp.1 = 0.0.0.0:1883
-      mqtt.exchange = amq.topic
-      mqtt.vhost = /
-
-    extraContainerPorts:
-      - name: mqtt
-        containerPort: 1883
-
-    service:
-      extraPorts:
-        - name: mqtt
-          port: 1883
-          targetPort: 1883
+      log.default.level = info
+      log.connection.level = debug
+      log.channel.level = debug
