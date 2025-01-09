@@ -4,20 +4,19 @@ import paho.mqtt.client as mqtt
 from time import sleep
 
 # CSV file parameters
-SOURCE_FILE = "C:\\Users\\louim\\Downloads\\SubData_10_03_2022.csv"
+SOURCE_FILE = "C:\\Users\\louim\\Downloads\\Smartphone-DENM.csv"
 LINE_SKIP_AT_START_OF_FILE = 1
-COLUMNS = ['id', 'stationid', 'referenceposition_latitude', 'heading_headingvalue', 'referenceposition_longitude', 'speed_speedvalue', 'referenceposition_altitude_altitudevalue', 'generationtime']
-NEEDED_COLUMNS = ['generationtime', 'speed_speedvalue', 'referenceposition_latitude', 'referenceposition_longitude']
+NEEDED_COLUMNS = ['detectiontime', 'eventposition_latitude', 'eventposition_longitude', 'referenceposition_longitude']
+NEEDED_COLUMNS_IDX = [12, 16, 17, 29]
 
 # Data parameter
-DATA_VOLUME = 100000
-REJECT_IF_SPEED_ZERO = True
+DATA_VOLUME = 1000
 
 #MQTT parameters
 BROKER_IP = "localhost"
 BROKER_PORT = 1883
 KEEP_ALIVE = 60
-TOPIC = "traffic/info"
+TOPIC = "traffic/event"
 USER = "user"
 PASSWORD = "password"
 
@@ -36,13 +35,13 @@ def get_data_from_row(row, columns):
         return row
     row_data = []
     for column in columns:
-        row_data.append(row[COLUMNS.index(column)])
+        row_data.append(row[column])
     return row_data
 
 def compute_row(row, columns):
     row_data = get_data_from_row(row, columns)
     return row_data
-    
+
 def get_data(source_file, line_skip = 0, columns = [], number_of_lines = -1):
     data = []
     with open(source_file, mode='r', newline='') as file:
@@ -55,17 +54,15 @@ def get_data(source_file, line_skip = 0, columns = [], number_of_lines = -1):
             if line <= line_skip:
                 continue
             computed_row = compute_row(row, columns)
-            if(REJECT_IF_SPEED_ZERO and computed_row[NEEDED_COLUMNS.index("speed_speedvalue")] == "0.0"):
-                continue
             data.append(computed_row)
     return data  
 
 def get_JSON_row(row):
     named_row = {
         "timestamp" : row[0],
-        "speed" : row[1],
-        "latitude" : row[2],
-        "longitude" : row[3]
+        "event" : row[3],
+        "latitude" : row[1],
+        "longitude" : row[2]
     }
     return json.dumps(named_row)
 
@@ -96,7 +93,7 @@ def send_data(data):
         mqtt_client.disconnect()
 
 def main():
-    data = get_data(SOURCE_FILE, LINE_SKIP_AT_START_OF_FILE, NEEDED_COLUMNS, DATA_VOLUME)
+    data = get_data(SOURCE_FILE, LINE_SKIP_AT_START_OF_FILE, NEEDED_COLUMNS_IDX, DATA_VOLUME)
     sorted_data = sorted(data)
     send_data(sorted_data)
 
