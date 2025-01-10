@@ -118,6 +118,11 @@ if __name__ == "__main__":
 
     BROKER_IP = os.getenv("MQTT_BROKER_IP")
     BROKER_PORT = os.getenv("MQTT_BROKER_PORT")
+    # Check if the port is an integer
+    if not BROKER_PORT or not BROKER_PORT.isdigit():
+        raise ValueError("MQTT_BROKER_PORT must be a valid integer")
+    BROKER_PORT = int(BROKER_PORT)
+
     USER = os.getenv("MQTT_USER")
     PASSWORD = os.getenv("MQTT_PASSWORD")
 
