@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: agent-pvc
+spec:
+  selector:
+    matchLabels:
+      app: agent
+
+  accessModes:
+    - ReadWriteMany
+
+  resources:
+    requests:
+      storage: 1Gi
