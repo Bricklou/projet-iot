@@ -1,104 +1,109 @@
 import csv
 import json
+import os
 import paho.mqtt.client as mqtt
-from time import sleep
+import time
 
-# CSV file parameters
-SOURCE_FILE = "C:\\Users\\louim\\Downloads\\SubData_10_03_2022.csv"
-LINE_SKIP_AT_START_OF_FILE = 1
-COLUMNS = ['id', 'stationid', 'referenceposition_latitude', 'heading_headingvalue', 'referenceposition_longitude', 'speed_speedvalue', 'referenceposition_altitude_altitudevalue', 'generationtime']
-NEEDED_COLUMNS = ['generationtime', 'speed_speedvalue', 'referenceposition_latitude', 'referenceposition_longitude']
 
-# Data parameter
-DATA_VOLUME = 100000
-REJECT_IF_SPEED_ZERO = True
+class VehicleMqttAgent:
+    NEEDED_COLUMNS = [
+        "generationtime",
+        "speed_speedvalue",
+        "referenceposition_latitude",
+        "referenceposition_longitude",
+    ]
+    LINE_SKIP_AT_START_OF_FILE = 1
 
-#MQTT parameters
-BROKER_IP = "localhost"
-BROKER_PORT = 1883
-KEEP_ALIVE = 60
-TOPIC = "traffic/info"
-USER = "user"
-PASSWORD = "password"
+    def __init__(self, source_file: str, mqtt_config: dict[str, str]) -> None:
+        # Check if fsource file exists
+        if not os.path.exists(source_file):
+            raise FileNotFoundError(f"File {source_file} does not exist")
 
-# DEBUG -- print data instead of sending data via MQTT
-DEBUG = False
+        self.source_file = source_file
 
-def on_connect(client, _userdata, _flags, reason_code, _properties):
-    print(f"Connected with result code {reason_code}")
-    client.subscribe(TOPIC)
+        # Check the mqtt data are valid
+        if not all(key in mqtt_config for key in ("broker_ip", "broker_port", "topic")):
+            raise ValueError("Invalid MQTT data")
 
-#def on_message(_client, _userdata, message):
-#    print(f"Received message from {message.topic}: {str(message.payload)}")
+        self.mqtt_config = mqtt_config
 
-def get_data_from_row(row, columns):
-    if len(columns) == 0:
-        return row
-    row_data = []
-    for column in columns:
-        row_data.append(row[COLUMNS.index(column)])
-    return row_data
+        self._connect()
 
-def compute_row(row, columns):
-    row_data = get_data_from_row(row, columns)
-    return row_data
-    
-def get_data(source_file, line_skip = 0, columns = [], number_of_lines = -1):
-    data = []
-    with open(source_file, mode='r', newline='') as file:
-        reader = csv.reader(file)
-        line = 0
-        for row in reader:
-            if line == number_of_lines + line_skip:
-                break
-            line += 1
-            if line <= line_skip:
-                continue
-            computed_row = compute_row(row, columns)
-            if(REJECT_IF_SPEED_ZERO and computed_row[NEEDED_COLUMNS.index("speed_speedvalue")] == "0.0"):
-                continue
-            data.append(computed_row)
-    return data  
+    def _connect(self) -> None:
+        self.mqtt_client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
+        self.mqtt_client.on_connect = self._on_connect
 
-def get_JSON_row(row):
-    named_row = {
-        "timestamp" : row[0],
-        "speed" : float(row[1]),
-        "latitude" : float(row[2]),
-        "longitude" : float(row[3])
-    }
-    return json.dumps(named_row)
+        self.mqtt_client.username_pw_set(
+            self.mqtt_config["user"], self.mqtt_config["password"]
+        )
+        self.mqtt_client.connect(
+            self.mqtt_config["broker_ip"], int(self.mqtt_config["broker_port"]), 60
+        )
 
-def send_row(row, mqtt_client):
-    request = mqtt_client.publish(TOPIC, get_JSON_row(row), qos=1)
-    request.wait_for_publish()
+        self.mqtt_client.loop_start()
 
-def get_MQTT_client():
-    mqtt_client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
-    mqtt_client.on_connect = on_connect
-    #mqtt_client.on_message = on_message
+    def _on_connect(self, _client, _userdata, _flags, reason_code, _properties) -> None:
+        print(f"Connected with result code {reason_code}")
+        self.mqtt_client.subscribe(self.mqtt_config["topic"])
 
-    mqtt_client.username_pw_set(USER, PASSWORD)
-    mqtt_client.connect(BROKER_IP, BROKER_PORT, KEEP_ALIVE)
+    def send_data(self) -> None:
+        # Read data from the source file and send it
+        with open(self.source_file, mode="r") as file:
+            reader = csv.reader(file)
+            line = 0
+            for raw in reader:
+                # Skip the header line
+                if line == 0:
+                    line += 1
+                    continue
 
-    mqtt_client.loop_start()
-    return mqtt_client
+                self._send_row(raw)
+                time.sleep(1)
 
-def send_data(data):
-    if DEBUG:
-       for row in data:
-            print(get_JSON_row(row))
-    else :
-        mqtt_client = get_MQTT_client()
-        for row in data:
-            send_row(row, mqtt_client)
-        sleep(1)
-        mqtt_client.disconnect()
+                # Increment the count
+                line += 1
+
+        self.mqtt_client.disconnect()
+
+    def _send_row(self, raw: list[str]) -> None:
+        row = self._format_row(raw)
+        row = json.dumps(row)
+
+        TOPIC = self.mqtt_config["topic"]
+        request = self.mqtt_client.publish(TOPIC, row, qos=1)
+        request.wait_for_publish()
+
+    def _format_row(self, raw: list[str]) -> dict[str, str | float]:
+        return {
+            "timestamp": raw[0],
+            "speed": float(raw[1]),
+            "latitude": float(raw[2]),
+            "longitude": float(raw[3]),
+        }
+
 
 def main():
-    data = get_data(SOURCE_FILE, LINE_SKIP_AT_START_OF_FILE, NEEDED_COLUMNS, DATA_VOLUME)
-    sorted_data = sorted(data)
-    send_data(sorted_data)
+    # Extract environment variables
+    source_file = os.getenv("SOURCE_FILE")
+    if not source_file:
+        raise ValueError("SOURCE_FILE environment variable is required")
+
+    port = os.getenv("MQTT_BROKER_PORT")
+    if not port:
+        raise ValueError("MQTT_BROKER_PORT environment variable is required")
+    port = int(port)
+
+    mqtt = {
+        "broker_ip": os.getenv("MQTT_BROKER_IP"),
+        "broker_port": port,
+        "topic": os.getenv("MQTT_TOPIC", "traffic/info"),
+        "user": os.getenv("USER"),
+        "password": os.getenv("PASSWORD"),
+    }
+
+    agent = VehicleMqttAgent(source_file, mqtt)
+    agent.send_data()
+
 
 if __name__ == "__main__":
     main()
