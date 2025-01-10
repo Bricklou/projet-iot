@@ -43,17 +43,27 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+
+      - name: Extract version tag
+        env:
+          BRANCH: ${{github.ref_name}}
+        id: split
+        run: echo "branch=${BRANCH##*/v}" >> "$GITHUB_OUTPUT"
+
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: type=raw,value=latest,enable={{is_default_branch}}
+          tags: |
+            type=ref,event=tag
+            type=raw,value=${{ steps.split.outputs.branch }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
-          context: ./agent/Dockerfile.agent
+          context: ./agent/
+          file: "./agent/Dockerfile.vehicle"
           push: true
           platforms: linux/arm64,linux/amd64
           tags: ${{ steps.meta.outputs.tags }}
