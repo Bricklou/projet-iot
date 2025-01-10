@@ -46,7 +46,7 @@ spec:
 
       containers:
         - name: agent
-          image: ghcr.io/bricklou/vehicle-agent:0.2.0
+          image: ghcr.io/bricklou/vehicle-agent:0.3.0
           volumeMounts:
             - name: agent-pvc
               mountPath: /data
@@ -57,9 +57,9 @@ spec:
               value: rabbitmq
             - name: MQTT_BROKER_PORT
               value: "1883"
-            - name: USER
+            - name: MQTT_USER
               value: user
-            - name: PASSWORD
+            - name: MQTT_PASSWORD
               value: password
           resources:
             limits:
