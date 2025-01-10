@@ -11,7 +11,7 @@ DEBUG = True
 class MQTTtoInfluxBridge:
     def __init__(self, mqtt_broker, mqtt_port, mqtt_user, mqtt_password, influx_url, influx_token, influx_org, influx_bucket):
         # MQTT setup
-        self.mqtt_client = mqtt.Client()
+        self.mqtt_client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
         self.mqtt_broker = mqtt_broker
         self.mqtt_port = mqtt_port
         self.mqtt_user = mqtt_user
