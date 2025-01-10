@@ -39,6 +39,7 @@ spec:
       log.default.level = info
       log.connection.level = debug
       log.channel.level = debug
+      mqtt.listeners.tcp.1 = 0.0.0.0:1883
       mqtt.exchange = amq.topic
       mqtt.vhost = /
 
