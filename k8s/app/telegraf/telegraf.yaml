@@ -34,6 +34,8 @@ spec:
       enabled: false
 
     config:
+      agent:
+        debug: true
       outputs:
         - influxdb_v2:
             urls:
@@ -41,14 +43,13 @@ spec:
             token: "${INFLUXDB_TOKEN}"
             organization: "${INFLUXDB_ORG}"
             bucket: "${INFLUXDB_BUCKET}"
-            timeout: "5s"
-            user_agent: "telegraf"
-            content_encoding: "gzip"
+            namepass: ["iot"]
 
       inputs:
         - amqp_consumer:
-            brokers: ["amqp://rabbitmq/iot"]
-            exchange: "telegraf"
+            brokers: ["amqp://rabbitmq/"]
+            exchange: "iot"
+            queue: "iot"
             username: "${RABBITMQ_USER}"
             password: "${RABBITMQ_PASSWORD}"
             data_format: "json"
