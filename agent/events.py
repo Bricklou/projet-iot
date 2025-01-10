@@ -79,7 +79,7 @@ class EventsMqttAgent:
     def _format_row(self, raw: list[str]) -> dict[str, str | float]:
         return {
             "timestamp": raw[12],
-            "event": float(raw[29]),
+            "event": raw[29],
             "latitude": float(raw[16]),
             "longitude": float(raw[17]),
         }
