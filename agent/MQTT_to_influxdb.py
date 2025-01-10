@@ -1,22 +1,9 @@
+import os
 from influxdb_client import InfluxDBClient, Point
 from influxdb_client.client.write_api import SYNCHRONOUS
 import paho.mqtt.client as mqtt
 import json
 from datetime import datetime
-
-# MQTT parameters
-BROKER_IP = "localhost"
-BROKER_PORT = 1883
-KEEP_ALIVE = 60
-TOPIC = "traffic/info"
-USER = "user"
-PASSWORD = "password"
-
-# InfluxDB parameters
-INFLUXDB_URL = "http://localhost:8086"
-INFLUXDB_TOKEN = "lkvv1hrjdcCBqx5iNq9qY_TNJNNf8_e_C93iCp6pU7PgBdUnZqR235nybYu2a_CkKLEhTmSMy2TNkUvJhMGLKA=="
-INFLUXDB_ORG = "LMO"
-INFLUXDB_BUCKET = "IoT"
 
 # DEBUG -- print data instead of sending data via MQTT
 DEBUG = True
@@ -128,6 +115,16 @@ class MQTTtoInfluxBridge:
 
 # Example usage
 if __name__ == "__main__":
+
+    BROKER_IP = os.getenv("MQTT_BROKER_IP")
+    BROKER_PORT = os.getenv("MQTT_BROKER_PORT")
+    USER = os.getenv("MQTT_USER")
+    PASSWORD = os.getenv("MQTT_PASSWORD")
+
+    INFLUXDB_URL = os.getenv("INFLUXDB_URL")
+    INFLUXDB_TOKEN = os.getenv("INFLUXDB_TOKEN")
+    INFLUXDB_ORG = os.getenv("INFLUXDB_ORG")
+    INFLUXDB_BUCKET = os.getenv("INFLUXDB_BUCKET")
     
     # Create and start the bridge
     bridge = MQTTtoInfluxBridge(BROKER_IP, BROKER_PORT, USER, PASSWORD, INFLUXDB_URL, INFLUXDB_TOKEN, INFLUXDB_ORG, INFLUXDB_BUCKET)

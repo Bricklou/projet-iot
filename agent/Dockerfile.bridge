@@ -1,0 +1,16 @@
+# Dockerfile for the MQTT_to_influxdb.py python script
+# This script is used to simulate the MQTT_to_influxdb's behavior
+
+FROM python:3.12
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Install the required python packages
+RUN pip install --no-cache-dir paho-mqtt==2.1.0 influxdb==5.3.2
+
+# Copy the script contents into the container at /app
+COPY ./MQTT_to_influxdb.py /app
+
+# Run the script
+CMD ["python", "/app/MQTT_to_influxdb.py"]

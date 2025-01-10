@@ -4,18 +4,18 @@ name: Docker Build
 on:
   push:
     tags:
-      - 'events-agent/v*'
+      - 'bridge/v*'
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository_owner }}/events-agent
+  IMAGE_NAME: ${{ github.repository_owner }}/bridge
 
 jobs:
-  events-agent:
+  bridge:
     runs-on: ubuntu-latest
 
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-events
+      group: ${{ github.workflow }}-${{ github.ref }}-bridge
       cancel-in-progress: true
 
     permissions:
@@ -63,7 +63,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./agent/
-          file: "./agent/Dockerfile.events"
+          file: "./agent/Dockerfile.bridge"
           push: true
           platforms: linux/arm64,linux/amd64
           tags: ${{ steps.meta.outputs.tags }}
