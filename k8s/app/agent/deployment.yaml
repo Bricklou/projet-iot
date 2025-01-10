@@ -82,7 +82,7 @@ spec:
             readOnlyRootFilesystem: true
 
         - name: events-agent
-          image: ghcr.io/bricklou/events-agent:0.1.0
+          image: ghcr.io/bricklou/events-agent:0.2.0
           volumeMounts:
             - name: agent-pvc
               mountPath: /data
