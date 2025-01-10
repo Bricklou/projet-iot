@@ -33,6 +33,8 @@ spec:
       existingPasswordSecret: rabbitmq-secrets
       existingSecretPasswordKey: ADMIN_PASSWORD
 
+    extraPlugins: "rabbitmq_mqtt"
+
     extraConfiguration: |-
       log.default.level = info
       log.connection.level = debug

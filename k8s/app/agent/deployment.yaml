@@ -57,9 +57,9 @@ spec:
               value: rabbitmq
             - name: MQTT_BROKER_PORT
               value: "1883"
-            - name: MQTT_BROKER_USER
+            - name: USER
               value: user
-            - name: MQTT_BROKER_PASSWORD
+            - name: PASSWORD
               value: password
           resources:
             limits:

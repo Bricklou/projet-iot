@@ -98,8 +98,8 @@ def main():
         "broker_ip": os.getenv("MQTT_BROKER_IP"),
         "broker_port": port,
         "topic": os.getenv("MQTT_TOPIC", "traffic/info"),
-        "user": os.getenv("USER"),
-        "password": os.getenv("PASSWORD"),
+        "user": os.getenv("MQTT_USER"),
+        "password": os.getenv("MQTT_PASSWORD"),
     }
 
     agent = VehicleMqttAgent(source_file, mqtt)
