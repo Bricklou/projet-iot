@@ -11,7 +11,7 @@ env:
   IMAGE_NAME: ${{ github.repository_owner }}/vehicle-agent
 
 jobs:
-  build-and-push:
+  vehicle-agent:
     runs-on: ubuntu-latest
 
     concurrency:

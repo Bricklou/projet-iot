@@ -4,10 +4,6 @@ kind: PersistentVolumeClaim
 metadata:
   name: agent-pvc
 spec:
-  selector:
-    matchLabels:
-      app: agent
-
   accessModes:
     - ReadWriteMany
 
