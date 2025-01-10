@@ -1,0 +1,78 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agent
+  labels:
+    app: agent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: agent
+  template:
+    metadata:
+      labels:
+        app: agent
+    spec:
+      initContainers:
+        # This init container will download the data required for the agent
+        - name: init-agent-data
+          image: busybox:1.36
+          # Check if the file exists, if not download it
+          command:
+            - sh
+            - -c
+            - |
+              if [ ! -f /data/SubData_10_03_2022-cleaned.csv ]; then
+                wget -O /data/SubData_10_03_2022-cleaned.csv https://dl.bricklou.ovh/file-sharing/SubData_10_03_2022-cleaned.csv
+              fi
+          volumeMounts:
+            - name: agent-pvc
+              mountPath: /data
+
+          securityContext:
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+
+          resources: 
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+
+      containers:
+        - name: agent
+          image: ghcr.io/bricklou/vehicle-agent:0.1.0
+          volumeMounts:
+            - name: agent-pvc
+              mountPath: /data
+          env:
+            - name: SOURCE_FILE
+              value: /data/SubData_10_03_2022-cleaned.csv
+            - name: MQTT_BROKER_IP
+              value: rabbitmq
+            - name: MQTT_BROKER_PORT
+              value: "1883"
+            - name: MQTT_BROKER_USER
+              value: user
+            - name: MQTT_BROKER_PASSWORD
+              value: password
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 250m
+              memory: 256Mi
+
+          securityContext:
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+
+      volumes:
+        - name: agent-pvc
+          persistentVolumeClaim:
+            claimName: agent-pvc

@@ -6,4 +6,4 @@ resources:
   - ./app/grafana/
   - ./app/rabbitmq/
   - ./app/influxdb/
-  - ./app/telegraf/
+  - ./app/agent/

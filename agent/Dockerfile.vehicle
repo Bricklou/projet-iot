@@ -1,0 +1,16 @@
+# Dockerfile for the vehicle.py python script
+# This script is used to simulate the vehicle's behavior
+
+FROM python:3.12
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Install the required python packages
+RUN pip install --no-cache-dir paho==^2.1.0
+
+# Copy the script contents into the container at /app
+COPY ./vehicle.py /app
+
+# Run the script
+CMD ["python", "/app/vehicle.py"]

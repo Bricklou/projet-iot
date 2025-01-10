@@ -37,3 +37,15 @@ spec:
       log.default.level = info
       log.connection.level = debug
       log.channel.level = debug
+      mqtt.exchange = amq.topic
+      mqtt.vhost = /
+
+    extraContainerPorts:
+      - name: mqtt
+        containerPort: 1883
+
+    service:
+      extraPorts:
+        - name: mqtt
+          port: 1883
+          targetPort: 1883
