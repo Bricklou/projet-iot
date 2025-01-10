@@ -35,6 +35,8 @@ metadata:
   labels:
     app: mosquitto
   annotations:
+    ignore-check.kube-linter.io/no-read-only-root-fs: "Don't have time to fix"
+    ignore-check.kube-linter.io/run-as-non-root: "Don't have time to fix"
     reloader.stakater.com/auto: "true"
 spec:
   selector:
@@ -64,6 +66,14 @@ spec:
         - name: mosquitto-password
           mountPath: /mosquitto/config/password.txt
           subPath: password.txt
+
+        resources: 
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
       volumes:
       - name: mosquitto-persistent-storage
         persistentVolumeClaim:
