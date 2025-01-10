@@ -4,6 +4,6 @@ kind: Kustomization
 
 resources:
   - ./app/grafana/
-  - ./app/rabbitmq/
+  - ./app/mosquitto/
   - ./app/influxdb/
   - ./app/agent/

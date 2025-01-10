@@ -29,7 +29,7 @@ spec:
               fi
 
               # Wait for rabbitmq to be ready
-              until nc -z -v -w30 rabbitmq 1883; do echo "Waiting for RabbitMQ..."; sleep 5; done
+              until nc -z -v -w30 mosquitto 1883; do echo "Waiting for RabbitMQ..."; sleep 5; done
           volumeMounts:
             - name: agent-pvc
               mountPath: /data
@@ -57,11 +57,11 @@ spec:
             - name: SOURCE_FILE
               value: /data/SubData_10_03_2022-cleaned.csv
             - name: MQTT_BROKER_IP
-              value: rabbitmq
+              value: mosquitto
             - name: MQTT_BROKER_PORT
               value: "1883"
             - name: MQTT_USER
-              value: user
+              value: admin
             - name: MQTT_PASSWORD
               value: password
           resources:
