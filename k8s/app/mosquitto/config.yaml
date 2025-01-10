@@ -916,4 +916,4 @@ metadata:
     app: mosquitto
 data:
   password.txt: |
-    admin:$7$101$tz6arXoVTIHSiOis$msNpyhYVntBTDtPjHeUhr8YAckwsKfQRivH9hm+It7Bn3/1OB2aBHQq+S0n5AZMokqRtv79Rzh5oZMwnnhtXZw==
+    admin:$7$101$OlePWfQmeGpwrTwb$PM7AJ6ckxPA4JyHC3EKSED2/wv3RjG++iv9klNWZfkdh/q0kirn52F+Vft+xyRZs3erNeL0MVsnR/7g3ZUXkcg==

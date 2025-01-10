@@ -34,6 +34,8 @@ metadata:
   name: mosquitto
   labels:
     app: mosquitto
+  annotations:
+    reloader.stakater.com/auto: "true"
 spec:
   selector:
     matchLabels:
