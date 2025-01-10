@@ -49,7 +49,7 @@ class MQTTtoInfluxBridge:
         if rc == 0:
             print(f"Connected to MQTT broker at {self.mqtt_broker}")
             # Subscribe to topic(s)
-            self.mqtt_client.subscribe("traffic/info")  # Subscribe to all sensor topics
+            self.mqtt_client.subscribe("traffic/#")  # Subscribe to all sensor topics
         else:
             print(f"Connection failed with code {rc}")
 
@@ -62,18 +62,29 @@ class MQTTtoInfluxBridge:
             
             # Safely convert string values to float
             try:
-                speed = float(payload.get("speed", "0"))
-                lat = float(payload.get("latitude", "0"))
-                long = float(payload.get("longitude", "0"))
+                speed = float(payload.get("speed", "-1"))
+                event = float(payload.get("event", "-1"))
+                lat = float(payload.get("latitude", "-1"))
+                long = float(payload.get("longitude", "-1"))
                 
                 # Create InfluxDB point with converted values
-                point = (
-                    Point("info")
-                    .field("speed", speed)
-                    .field("lat", lat)
-                    .field("long", long)
-                    .time(datetime.now())
-                )
+                point = None
+                if not speed == -1:
+                    point = (
+                        Point("info")
+                            .tag("info", "info")
+                            .field("speed", speed)
+                            .field("lat", lat)
+                            .field("long", long)
+                    )
+                else:
+                    point = (
+                        Point("event")
+                            .tag("event","event")
+                            .field("event", event)
+                            .field("lat", lat)
+                            .field("long", long)
+                    )
                 
                 # Write to InfluxDB
                 self.write_api.write(
