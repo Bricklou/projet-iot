@@ -33,7 +33,9 @@ class VehicleMqttAgent:
         self.mqtt_client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
         self.mqtt_client.on_connect = self._on_connect
 
-        print(f"Connecting to {self.mqtt_config['broker_ip']}:{self.mqtt_config['broker_port']}")
+        print(
+            f"Connecting to {self.mqtt_config['broker_ip']}:{self.mqtt_config['broker_port']} with user \"${self.mqtt_config["user"]}\""
+        )
         self.mqtt_client.username_pw_set(
             self.mqtt_config["user"], self.mqtt_config["password"]
         )
