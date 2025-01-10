@@ -1,0 +1,51 @@
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bridge
+  labels:
+    app: bridge
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bridge
+  template:
+    metadata:
+      labels:
+        app: bridge
+    spec:
+      containers:
+        - name: bridge
+          image: ghcr.io/bricklou/bridge:0.1.0
+          env:
+            - name: MQTT_BROKER_IP
+              value: mosquitto
+            - name: MQTT_BROKER_PORT
+              value: "1883"
+            - name: MQTT_USER
+              value: admin
+            - name: MQTT_PASSWORD
+              value: password
+
+            - name: INFLUXDB_URL
+              value: http://influxdb:8086
+            - name: INFLUXDB_TOKEN
+              value: "5K7kqiCXSfAP59BfeNxsDESM2hZNM46j3dIzhKa9lSlcMvJa4tMfs7O8SHmOcXLGD8moKdygKsgYR23RpcieNg=="
+            - name: INFLUXDB_ORG
+              value: "iot"
+            - name: INFLUXDB_BUCKET
+              value: "iot"
+          resources:
+            limits:
+              cpu: 50m
+              memory: 64Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+
+          securityContext:
+            runAsUser: 1000
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
