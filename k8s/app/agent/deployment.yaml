@@ -27,6 +27,9 @@ spec:
               if [ ! -f /data/SubData_10_03_2022-cleaned.csv ]; then
                 wget -O /data/SubData_10_03_2022-cleaned.csv http://192.168.1.24:9000/file-sharing/SubData_10_03_2022-cleaned.csv --no-check-certificate
               fi
+
+              # Wait for rabbitmq to be ready
+              until nc -z -v -w30 rabbitmq 1883; do echo "Waiting for RabbitMQ..."; sleep 5; done
           volumeMounts:
             - name: agent-pvc
               mountPath: /data
