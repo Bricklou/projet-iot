@@ -5,11 +5,11 @@ import paho.mqtt.client as mqtt
 import time
 
 
-class VehicleMqttAgent:
+class EventsMqttAgent:
     NEEDED_COLUMNS = [
-        "generationtime",
-        "speed_speedvalue",
-        "referenceposition_latitude",
+        "detectiontime",
+        "eventposition_latitude",
+        "eventposition_longitude",
         "referenceposition_longitude",
     ]
     LINE_SKIP_AT_START_OF_FILE = 1
@@ -78,10 +78,10 @@ class VehicleMqttAgent:
 
     def _format_row(self, raw: list[str]) -> dict[str, str | float]:
         return {
-            "timestamp": raw[7],
-            "speed": float(raw[5]),
-            "latitude": float(raw[2]),
-            "longitude": float(raw[4]),
+            "timestamp": raw[12],
+            "event": float(raw[29]),
+            "latitude": float(raw[16]),
+            "longitude": float(raw[17]),
         }
 
 
@@ -99,12 +99,12 @@ def main():
     mqtt = {
         "broker_ip": os.getenv("MQTT_BROKER_IP"),
         "broker_port": port,
-        "topic": os.getenv("MQTT_TOPIC", "traffic/info"),
+        "topic": os.getenv("MQTT_TOPIC", "traffic/events"),
         "user": os.getenv("MQTT_USER"),
         "password": os.getenv("MQTT_PASSWORD"),
     }
 
-    agent = VehicleMqttAgent(source_file, mqtt)
+    agent = EventsMqttAgent(source_file, mqtt)
     agent.send_data()
 
 
