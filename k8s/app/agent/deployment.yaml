@@ -46,7 +46,7 @@ spec:
 
       containers:
         - name: agent
-          image: ghcr.io/bricklou/vehicle-agent:0.3.0
+          image: ghcr.io/bricklou/vehicle-agent:0.5.0
           volumeMounts:
             - name: agent-pvc
               mountPath: /data
